@@ -1,5 +1,7 @@
 import haversine
-dataset = open("D:/hust/nm trí tuệ nhân tạo/pathfinder/data/out4.txt", "+br") 
+import os
+dataset_path = os.path.join(os.path.dirname(__file__), "../data/out4.txt")
+dataset = open(dataset_path, "r")
 nodes = []
 count = 0
 for x in dataset:

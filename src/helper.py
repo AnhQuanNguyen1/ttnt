@@ -1,7 +1,9 @@
 import xmltodict
 import haversine
 import extract
-graphml = open("D:/hust/nm trí tuệ nhân tạo/pathfinder/data/map3.graphml", "+br") 
+import os
+graphml_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../data/map3.graphml"))
+graphml = open(graphml_path, "+br")
 xmldoc = xmltodict.parse(graphml, xml_attribs=True)
 
 # node: list of {'@id': '11337806829', 'data': [{'@key': 'd3', '#text': '21.0287243'}, {'@key': 'd4', '#text': '105.8598932'}]}
