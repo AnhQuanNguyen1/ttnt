@@ -1,7 +1,7 @@
 import haversine
 import os
 dataset_path = os.path.join(os.path.dirname(__file__), "../data/out4.txt")
-dataset = open(dataset_path, "r")
+dataset = open(dataset_path, "+br")
 nodes = []
 count = 0
 for x in dataset:

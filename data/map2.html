@@ -10,6 +10,8 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <style>
         #map{
             height: 99vh;
@@ -120,29 +122,25 @@
                     "mode": "cors"
                 })
                 .then((res) => {
+                    console.log("Response status:", res.status);
                     if (res.status == 200){
                         return(res.json())
                     }
                     else{
+                        console.log("Failed response:", res);
                         alert("Fail to find the shortest path")
                     }
                 })
                 .then((array) => {
-                    // array.push([firstPoint.lat, firstPoint.lng])
-                    // array.splice(0, 0, [secondPoint.lat, secondPoint.lng])
-                    // marker2.setLatLng(array[0])
-                    // marker1.setLatLng(array[array.length - 1])
+                    console.log("Received path data:", array);
                     polyline = L.polyline(array)
                     polyline.addTo(map);
                     dashPolyline = L.polyline([array[0], [secondPoint.lat, secondPoint.lng]], {"dashArray": "10", "dashOffset": 3, "color": "gray"}).addTo(map)
                     dashPolyline2 = L.polyline([array[array.length - 1], [firstPoint.lat, firstPoint.lng]], {"dashArray": "4", "dashOffset": 3, "color": "gray"}).addTo(map)
-                    // console.log(array)
-                    // for (let i = 0; i < array.length; i++){
-                    //     L.marker(array[i]).addTo(map)
-                    // }
                 })
                 .catch((e) => {
-                    allert("Can't Find A Path")
+                    console.error("Error:", e);
+                    alert("Can't Find A Path")
                 })
             }
             else if (count == 2){
@@ -156,6 +154,64 @@
         }
 
         map.on('click', onMapClick);
+
+        L.Control.geocoder({
+            defaultMarkGeocode: false,
+            geocoder: L.Control.Geocoder.nominatim({
+                geocodingQueryParams: {
+                    viewbox: '105.73,20.96,105.96,21.09', 
+                    bounded: 1,
+                    countrycodes: 'vn',
+                    addressdetails: 1, 
+                    limit: 10, 
+                    'accept-language': 'vi'
+                }
+            }),
+            placeholder: 'Nhập địa chỉ cần tìm...',
+            suggestMinLength: 3, 
+            position: 'topright',
+            showResultIcons: true
+        })
+        .on('markgeocode', function(e) {
+            const lat = e.geocode.center.lat;
+            const lng = e.geocode.center.lng;
+
+            if (count == 0) {
+                firstPoint.lat = lat;
+                firstPoint.lng = lng;
+                count += 1;
+                marker1 = L.marker([lat, lng]).addTo(map)
+                    .bindPopup(e.geocode.name)
+                    .openPopup();
+            } else if (count == 1) {
+                secondPoint.lat = lat;
+                secondPoint.lng = lng;
+                count += 1;
+                marker2 = L.marker([lat, lng]).addTo(map)
+                    .bindPopup(e.geocode.name)
+                    .openPopup();
+
+                fetch(server + api + firstPoint.lat + ',' + firstPoint.lng + ',' + secondPoint.lat + ',' + secondPoint.lng, {
+                    "mode": "cors"
+                })
+                .then((res) => {
+                    if (res.status == 200) {
+                        return res.json();
+                    } else {
+                        alert("Fail to find the shortest path");
+                    }
+                })
+                .then((array) => {
+                    polyline = L.polyline(array).addTo(map);
+                    dashPolyline = L.polyline([array[0], [secondPoint.lat, secondPoint.lng]], {"dashArray": "10", "dashOffset": 3, "color": "gray"}).addTo(map);
+                    dashPolyline2 = L.polyline([array[array.length - 1], [firstPoint.lat, firstPoint.lng]], {"dashArray": "4", "dashOffset": 3, "color": "gray"}).addTo(map);
+                })
+                .catch((e) => {
+                    alert("Can't Find A Path");
+                });
+            }
+        })
+        .addTo(map);
     </script>
 </body>
 </html>

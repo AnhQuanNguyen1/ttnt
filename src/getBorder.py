@@ -9,7 +9,7 @@ f = open("../data/border.txt", "w")
 graphml = open("../data/map3.graphml", "+br")
 xmldoc = xmltodict.parse(graphml, xml_attribs=True)
 sys.stdout = f
-ways = ["832455068", "832455091", "832455017", "832455027", "832454977", "1001979393"]
+ways = ["914593399", "914593400", "914593369", "914593379", "914593373", "914593396"]
 def getBorder(wayId):
     nodes = []
     visited = {}
