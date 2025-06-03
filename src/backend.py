@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import getInput
 import astar
@@ -26,6 +26,7 @@ def calculate_flood():
     print("Shortest distance: " + str(finalDistance))
     response = helper.getResponseLeafLet(pathDict, end)
     return json.dumps(response)
+
 @app.route('/calculate', methods=['GET'])
 def calculate():
     raw_input = request.args.get('pntdata').split(',')
@@ -43,6 +44,7 @@ def calculate():
     print("Shortest distance: " + str(finalDistance))
     response = helper.getResponseLeafLet(pathDict, end)
     return json.dumps(response)
+
 @app.route('/calculate_traffic', methods=['GET'])
 def calculate_traffic():
     raw_input = request.args.get('pntdata').split(',')
@@ -60,5 +62,25 @@ def calculate_traffic():
     print("Shortest distance: " + str(finalDistance))
     response = helper.getResponseLeafLet(pathDict, end)
     return json.dumps(response)
+
+@app.route('/reset_blocked_edges', methods=['POST'])
+def reset_blocked_edges():
+    try:
+        with open('data/blocked_edges.txt', 'w', encoding='utf-8') as f:
+            f.write('')  
+        return json.dumps({"success": True, "message": "Đã reset file blocked_edges.txt"})
+    except Exception as e:
+        return json.dumps({"success": False, "message": str(e)}), 500
+    
+@app.route('/clear_blocked_edges', methods=['POST'])
+def clear_blocked_edges():
+    try:
+        # Clear the blocked_edges.txt file
+        with open('data/blocked_edges.txt', 'w') as f:
+            f.write('')
+        return jsonify({'status': 'success'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
