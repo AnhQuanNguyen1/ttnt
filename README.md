@@ -10,8 +10,8 @@ Users can easily select two points inside the specified area, and Pathfinder wil
 1. Run `backend.py` located in the `src` folder.  
 2. Open one of the following HTML files in the `data` folder with your preferred web browser:  
    - `map2.html` — the standard map interface for route finding  
-   - `map2_traffic.html` — the map with additional traffic scenarios integrated  
-   - `map2_flood.html` — the map with added flood scenario considerations  
+   - `map2_traffic.html` — the map to add traffic scenarios  
+   - `map2_flood.html` — the map to add flood scenarios  
 3. These additional HTML files (`map2_traffic.html` and `map2_flood.html`) provide enriched route finding by incorporating specific situational data (traffic congestion or flooding) to enhance decision-making.  
 4. Use the interactive map interface to select start and end points, then view the shortest route displayed based on the selected map version.
 
